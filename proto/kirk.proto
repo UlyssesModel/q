@@ -1,0 +1,73 @@
+syntax = "proto3";
+package kirk.v1;
+
+service KirkService {
+  rpc Forward(KirkRequest) returns (KirkResponse);
+  rpc InferenceEntropy(SampleRequest) returns (EntropyResponse);
+  rpc InferenceFeatures(SampleRequest) returns (FeaturesResponse);
+  rpc ActiveInference(SampleRequest) returns (ActiveInferenceResponse);
+  rpc ActiveInferenceEntropy(SampleRequest) returns (EntropyResponse);
+  rpc ActiveInferenceFeatures(SampleRequest) returns (FeaturesResponse);
+  rpc ForwardSample(SampleSizeRequest) returns (SampleResponse);
+}
+
+// Square N×N matrix, row-major, little-endian f32 in `data_re` and `data_im`.
+message Matrix {
+  uint32 dim = 1;              // N (max 1024)
+  bytes data_re = 2;           // 4·N·N bytes
+  bytes data_im = 3;           // 4·N·N bytes
+}
+
+message KirkRequest {
+  Matrix matrix = 1;
+  int64 timestamp_us = 2;
+}
+
+message ComplexMatrix {
+  uint32 dim = 1;
+  bytes data_re = 2;
+  bytes data_im = 3;
+}
+
+message KirkResponse {
+  float entropy_re = 1;
+  float entropy_im = 2;
+  float entropy = 3;
+  float entropy_zscore = 4;
+  uint32 regime = 5;           // 0/1/2
+  float confidence = 6;
+  uint64 processing_time_us = 7;
+  int64 timestamp_us = 8;
+  ComplexMatrix rho = 9;       // rho = matrix_re + i·matrix_im
+}
+
+message SampleRequest {
+  // Sample is interpreted as complex N×N. Real-only senders set data_im to empty bytes.
+  ComplexMatrix sample = 1;
+}
+
+message EntropyResponse { float total_relative_entropy = 1; }
+
+message FeatureScalar { float re = 1; float im = 2; }
+
+message FeaturesResponse {
+  ComplexMatrix feature_arr = 1;    // (N, N)
+  ComplexMatrix feature_vec = 2;    // (1, 2N) packed
+  FeatureScalar feature_scalar = 3;
+}
+
+message ActiveInferenceResponse {
+  ComplexMatrix feature_arr = 1;
+  ComplexMatrix feature_vec = 2;
+  FeatureScalar feature_scalar = 3;
+  float total_relative_entropy = 4;
+}
+
+message SampleSizeRequest { uint32 dim = 1; uint64 seed = 2; }
+
+message SampleResponse {
+  ComplexMatrix feature_array = 1;
+  ComplexMatrix feature_vector = 2;
+  FeatureScalar feature_scalar = 3;
+  float relative_entropy = 4;
+}

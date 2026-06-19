@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "sessions": [
+    {
+      "session_id": "fd99cf97-06df-4fb6-bc6d-1013605552dc",
+      "session_name": "20260616_201914_kirk-stub-rs-multiproto",
+      "loop_id": "fd99cf97-06df-4fb6-bc6d-1013605552dc",
+      "prompt": "create a stand alone kirk-stub-realistic in Rust + gRPC/REST/TCP servers + bun TS benchmark harness",
+      "branch": "on-loop/kirk-stub-rs-multiproto",
+      "status": "active",
+      "started_at": "2026-06-16T20:19:14Z",
+      "completed_at": null,
+      "worktree_path": ".claude/worktrees/kirk-stub-rs-multiproto",
+      "session_dir": ".on-loop/sessions/20260616_201914_kirk-stub-rs-multiproto",
+      "pr_url": null
+    }
+  ]
+}

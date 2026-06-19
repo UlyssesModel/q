@@ -1,0 +1,125 @@
+2026-06-16T20:19:14Z orchestrator INIT created branch on-loop/kirk-stub-rs-multiproto
+2026-06-16T20:19:14Z orchestrator INIT created worktree .claude/worktrees/kirk-stub-rs-multiproto
+2026-06-16T20:19:14Z orchestrator INIT created session dir .on-loop/sessions/20260616_201914_kirk-stub-rs-multiproto
+2026-06-16T20:19:14Z orchestrator INIT wrote state.json, index.json, plan.md, changes.log
+2026-06-16T20:20:00Z architect SPEC wrote agent-notes/architect.md
+2026-06-16T20:45:00Z orchestrator PLAN wrote plan.md from architect spec
+2026-06-16T23:00:00Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/Cargo.toml
+2026-06-16T23:00:01Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/rust-toolchain.toml
+2026-06-16T23:00:02Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/.gitignore
+2026-06-16T23:00:03Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/.dockerignore
+2026-06-16T23:00:04Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/Makefile
+2026-06-16T23:00:05Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/README.md
+2026-06-16T23:00:06Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/docker-compose.yml
+2026-06-16T23:00:07Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/docker/Dockerfile
+2026-06-16T23:00:08Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/docker/Dockerfile.bench
+2026-06-16T23:00:09Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/proto/kirk.proto
+2026-06-16T23:00:10Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/Cargo.toml
+2026-06-16T23:00:11Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/README.md
+2026-06-16T23:00:12Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/src/lib.rs
+2026-06-16T23:00:13Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/src/output.rs
+2026-06-16T23:00:14Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/src/eigensolver.rs
+2026-06-16T23:00:15Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/src/density_matrix.rs
+2026-06-16T23:00:16Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/src/entropy.rs
+2026-06-16T23:00:17Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/src/observables.rs
+2026-06-16T23:00:18Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/src/reconstruct.rs
+2026-06-16T23:00:19Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/src/rng.rs
+2026-06-16T23:00:20Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/src/variants.rs
+2026-06-16T23:00:21Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/src/sample.rs
+2026-06-16T23:00:22Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/src/kirk.rs
+2026-06-16T23:00:23Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/tests/basic.rs
+2026-06-16T23:00:24Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/tests/parity.rs
+2026-06-16T23:00:25Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/tests/fixtures/handcalc_N2.json
+2026-06-16T23:00:26Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/tests/fixtures/seed42_N8.json
+2026-06-16T23:00:27Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/tests/fixtures/seed42_N16.json
+2026-06-16T23:00:28Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/tests/fixtures/seed42_N32.json
+2026-06-16T23:00:29Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/Cargo.toml
+2026-06-16T23:00:30Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/README.md
+2026-06-16T23:00:31Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/build.rs
+2026-06-16T23:00:32Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/main.rs
+2026-06-16T23:00:33Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/config.rs
+2026-06-16T23:00:34Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/error.rs
+2026-06-16T23:00:35Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/backend.rs
+2026-06-16T23:00:36Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/shutdown.rs
+2026-06-16T23:00:37Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/metrics.rs
+2026-06-16T23:00:38Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/grpc/mod.rs
+2026-06-16T23:00:39Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/grpc/service.rs
+2026-06-16T23:00:40Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/rest/mod.rs
+2026-06-16T23:00:41Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/rest/routes.rs
+2026-06-16T23:00:42Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/rest/schema.rs
+2026-06-16T23:00:43Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/tcp/mod.rs
+2026-06-16T23:00:44Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/tcp/framing.rs
+2026-06-16T23:00:45Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/tcp/codec.rs
+2026-06-16T23:00:46Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/tcp/handler.rs
+2026-06-16T23:00:47Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/package.json
+2026-06-16T23:00:48Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/bunfig.toml
+2026-06-16T23:00:49Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/tsconfig.json
+2026-06-16T23:00:50Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/README.md
+2026-06-16T23:00:51Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/src/cli.ts
+2026-06-16T23:00:52Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/src/runner.ts
+2026-06-16T23:00:53Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/src/compare.ts
+2026-06-16T23:00:54Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/src/rng.ts
+2026-06-16T23:00:55Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/src/matrix.ts
+2026-06-16T23:00:56Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/src/summary.ts
+2026-06-16T23:00:57Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/src/results.ts
+2026-06-16T23:00:58Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/src/transports/types.ts
+2026-06-16T23:00:59Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/src/transports/rest.ts
+2026-06-16T23:01:00Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/src/transports/grpc.ts
+2026-06-16T23:01:01Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/src/transports/tcp.ts
+2026-06-16T23:01:02Z coding CODE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/results/.gitkeep
+2026-06-16T21:30:00Z testing CREATE kirk-server/src/lib.rs
+2026-06-16T21:30:01Z testing MODIFY kirk-server/Cargo.toml
+2026-06-16T21:30:02Z testing MODIFY kirk-server/build.rs
+2026-06-16T21:30:03Z testing MODIFY kirk-server/src/main.rs
+2026-06-16T21:30:04Z testing MODIFY kirk-server/src/tcp/codec.rs
+2026-06-16T21:30:05Z testing CREATE kirk-server/tests/tcp_integration.rs
+2026-06-16T21:30:06Z testing CREATE kirk-server/tests/rest_integration.rs
+2026-06-16T21:30:07Z testing CREATE kirk-server/tests/grpc_integration.rs
+2026-06-16T21:30:08Z testing CREATE kirk-server/tests/cross_transport.rs
+2026-06-16T21:30:09Z testing NOTES .on-loop/sessions/20260616_201914_kirk-stub-rs-multiproto/agent-notes/testing.md
+2026-06-16T23:58:00Z security SECURITY ran cargo audit (1 unmaintained warning, 0 CVEs)
+2026-06-16T23:58:01Z security SECURITY wrote agent-notes/security.md (0 CRITICAL, 2 HIGH, 6 MEDIUM, 5 LOW, 6 INFO)
+2026-06-16T23:58:02Z security SECURITY recommendation: RETRY CODE (2 HIGH findings: SEC-001 base64 decode allocates before cap, SEC-002 unbounded TCP connections / per-frame task spawn)
+2026-06-16T23:55:00Z orchestrator SECURITY received 2 HIGH 6 MEDIUM findings; retrying CODE (retry 1/2)
+2026-06-17T00:00:00Z coding MODIFY kirk-server/src/config.rs — SEC-002/003/007: clamp --max-matrix-dim to [1,4096]; add --max-connections, --max-in-flight-per-conn, --tcp-write-timeout-ms with value_parser ranges
+2026-06-17T00:00:00Z coding MODIFY kirk-server/src/backend.rs — SEC-008: reject N<2 in check_dim with explicit message
+2026-06-17T00:00:00Z coding MODIFY kirk-server/src/rest/schema.rs — SEC-001: validate decoded-size upper bound BEFORE base64 decode; pre-size Vec
+2026-06-17T00:00:00Z coding MODIFY kirk-server/src/rest/routes.rs — SEC-006: layer DefaultBodyLimit::max(64 MiB) on the REST router
+2026-06-17T00:00:00Z coding MODIFY kirk-server/src/lib.rs — SEC-005/006/014: ServerSettings + start_server_with; bind/limits/timeout wiring; tonic max_{decoding,encoding}_message_size(64 MiB); #![forbid(unsafe_code)]
+2026-06-17T00:00:00Z coding MODIFY kirk-server/src/main.rs — SEC-005/014: thread Config through ServerSettings; log effective caps; #![forbid(unsafe_code)]
+2026-06-17T00:00:00Z coding MODIFY kirk-server/src/tcp/mod.rs — re-export TcpServeLimits
+2026-06-17T00:00:00Z coding MODIFY kirk-server/src/tcp/handler.rs — SEC-002/007/011: connection semaphore + per-conn in-flight semaphore + write_timeout via tokio::time::timeout; ERROR(BAD_PAYLOAD) on truncated payload read; dim-check before codec arithmetic
+2026-06-17T00:00:00Z coding MODIFY kirk-server/src/tcp/codec.rs — SEC-004: checked_mul/checked_add for expected payload length; reject n>MAX_ALLOWED_MATRIX_DIM before arithmetic
+2026-06-17T00:00:00Z coding MODIFY kirk-stub-realistic/src/kirk.rs — SEC-008: document N=1 sentinel behavior in forward() docstring
+2026-06-17T00:00:00Z coding MODIFY kirk-server/README.md — SEC-005/006/008/012: document --bind honoring + new caps + N>=2 + out-of-order TCP completion semantics
+2026-06-17T00:00:00Z coding MODIFY docker-compose.yml — SEC-009: drop broken wget healthcheck (distroless has no shell); switch bench depends_on to service_started
+2026-06-17T00:00:00Z coding MODIFY kirk-server/tests/rest_integration.rs — add tests: rest_forward_n1_rejected_with_bad_request, rest_forward_oversized_base64_rejected_without_alloc, rest_body_limit_allows_normal_request; update rest_error_envelope_shape to use matrix_dim=4
+2026-06-17T00:00:00Z coding MODIFY kirk-server/tests/tcp_integration.rs — add tests: tcp_forward_n1_rejected, tcp_connection_cap_enforced (uses start_server_with cap=2)
+2026-06-19T14:17:00Z coding SECFIX kirk-server/src/config.rs — SEC-009: add --healthcheck CLI flag (one-shot HTTP probe)
+2026-06-19T14:17:00Z coding SECFIX kirk-server/src/main.rs — SEC-009: implement one-shot healthcheck path (hand-rolled HTTP/1.1 GET /healthz; exit 0 on 200 else 1)
+2026-06-19T14:17:00Z coding SECFIX docker-compose.yml — SEC-009: switch to kirk-server --healthcheck for compose health probe; bench depends_on service_healthy
+2026-06-19T14:30:00Z coding SECFIX kirk-server/src/main.rs — SEC-009: add unit tests for parse_http_status (6 new tests, no networking required)
+2026-06-19 SECURITY (re-audit pass 2): verified all SEC-001..SEC-009, SEC-011, SEC-014 remediations against source. cargo check / clippy / unit+parity tests clean. Integration tests blocked by macOS TIME_WAIT exhaustion (environmental, not remediation failure). Recommendation: PASS to next phase. Findings appended under "## Re-Audit (2026-06-19)" in agent-notes/security.md.
+2026-06-19T00:00:00Z documentation REWRITE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/README.md
+2026-06-19T00:00:01Z documentation REWRITE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-stub-realistic/README.md
+2026-06-19T00:00:02Z documentation REWRITE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/README.md
+2026-06-19T00:00:03Z documentation REWRITE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/bench-ts/README.md
+2026-06-19T00:00:04Z documentation CREATE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/proto/README.md
+2026-06-19T00:00:05Z documentation CREATE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/CLAUDE.md
+2026-06-19T00:00:06Z documentation CREATE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/docs/ARCHITECTURE.md
+2026-06-19T00:00:07Z documentation CREATE /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/CHANGELOG.md
+2026-06-19T00:00:08Z documentation NOTES /Users/charmalloc/dev/kavara/q/.on-loop/sessions/20260616_201914_kirk-stub-rs-multiproto/agent-notes/documentation.md
+2026-06-19T00:00:00Z build BUILD /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/.github/workflows/ci.yml (created — 4-job CI: rust/bun/docker/audit)
+2026-06-19T00:00:01Z build BUILD /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/rustfmt.toml (created — stable rustfmt settings edition=2021 max_width=100)
+2026-06-19T00:00:02Z build BUILD /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/.editorconfig (created — 4-space Rust, 2-space TS/YAML/TOML, tab Makefile)
+2026-06-19T00:00:03Z build BUILD /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/scripts/dev-setup.sh (created — idempotent dev bootstrap: protoc + bun hint + cargo fetch)
+2026-06-19T00:00:04Z build BUILD /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/Makefile (modified — added fmt/lint/ci/proto-sync/bench-compare/help targets; test uses --test-threads=1)
+2026-06-19T00:00:05Z build FMT /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/backend.rs (cargo fmt — import order + line wrap)
+2026-06-19T00:00:06Z build FMT /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/config.rs (cargo fmt — long #[command(...)] attr wrap)
+2026-06-19T00:00:07Z build FMT /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/grpc/service.rs (cargo fmt — fn signature wrap + struct literal formatting)
+2026-06-19T00:00:08Z build FMT /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/rest/routes.rs (cargo fmt — line wrap)
+2026-06-19T00:00:09Z build FMT /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/rest/schema.rs (cargo fmt — line wrap)
+2026-06-19T00:00:10Z build FMT /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/tcp/codec.rs (cargo fmt — byte array literals, struct fields)
+2026-06-19T00:00:11Z build FMT /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/tcp/framing.rs (cargo fmt — assert!(matches!(...)) wrap)
+2026-06-19T00:00:12Z build FMT /Users/charmalloc/dev/kavara/q/.claude/worktrees/kirk-stub-rs-multiproto/kirk-server/src/tcp/handler.rs (cargo fmt — line wrap)
+2026-06-19T00:01:00Z reviewer REVIEW /Users/charmalloc/dev/kavara/q/.on-loop/sessions/20260616_201914_kirk-stub-rs-multiproto/agent-notes/reviewer.md (created — APPROVE with 5 NITs; fmt/clippy/test/audit verified locally)

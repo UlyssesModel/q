@@ -1,0 +1,12 @@
+# syntax=docker/dockerfile:1.7
+FROM oven/bun:1-alpine AS runtime
+WORKDIR /app
+
+COPY bench-ts/package.json bench-ts/bunfig.toml ./
+RUN bun install --production
+
+COPY bench-ts ./
+COPY proto ../proto
+
+ENV NODE_ENV=production
+ENTRYPOINT ["bun", "src/cli.ts"]

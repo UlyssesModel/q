@@ -1,0 +1,27 @@
+{
+  "version": "1.1",
+  "loop_id": "fd99cf97-06df-4fb6-bc6d-1013605552dc",
+  "session_id": "fd99cf97-06df-4fb6-bc6d-1013605552dc",
+  "prompt": "create a stand alone /Users/charmalloc/dev/kavara/kirk-stub-realistic in Rust and then a grpc server that exposes the same stub inferfaces on one port and then another REST interface on another port along with typescript clients in a bun shell that can connect and spin up tests of users in the docker compose for the server testing with multiple users and amount of request over a period of time either REST or gRPC and get a result to see what it might be. creating a third port with a custom TCP/IP protocol with barebones as fast as possible implementation to out perform gRPC and REST too. At the end we should have a RUST server for hyper scaling that wraps the kirk stub we rewrote in rust in this repo with a bun typescript shell to drive a benchmarks on the 3 approaches with data sets sizes and user paramaters for launching and keeping track of tests to compare the pathways.",
+  "phase": "GIT",
+  "started_at": "2026-06-16T20:19:14Z",
+  "updated_at": "2026-06-19T04:00:00Z",
+  "branch": "on-loop/kirk-stub-rs-multiproto",
+  "worktree_path": ".claude/worktrees/kirk-stub-rs-multiproto",
+  "session_dir": ".on-loop/sessions/20260616_201914_kirk-stub-rs-multiproto",
+  "pr_url": null,
+  "retries": {
+    "test_to_code": 0,
+    "security_to_code": 1,
+    "review_to_code": 0
+  },
+  "max_retries": {
+    "test_to_code": 3,
+    "security_to_code": 2,
+    "review_to_code": 2
+  },
+  "phases_completed": ["INIT", "SPEC", "PLAN", "CODE", "TEST", "SECURITY", "DOC", "BUILD", "REVIEW"],
+  "current_agent": "orchestrator",
+  "error": null,
+  "todos": []
+}

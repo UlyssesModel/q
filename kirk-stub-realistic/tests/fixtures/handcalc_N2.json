@@ -1,0 +1,16 @@
+{
+  "_comment": "Hand-computed N=2 fixture (H = diag(1, -1), T=1.0). Used as a smoke check until the test agent regenerates real Python fixtures.",
+  "n": 2,
+  "temperature": 1.0,
+  "matrix_re": [1.0, 0.0, 0.0, -1.0],
+  "matrix_im": [0.0, 0.0, 0.0, 0.0],
+  "timestamp_us": 0,
+  "expected": {
+    "entropy": 0.36533208,
+    "entropy_re": 0.36533208,
+    "entropy_im": 0.6931472,
+    "confidence": 0.47296384,
+    "rho_re": [0.11920291, 0.0, 0.0, 0.88079712],
+    "rho_im": [0.0, 0.0, 0.0, 0.0]
+  }
+}
