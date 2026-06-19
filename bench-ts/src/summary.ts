@@ -64,17 +64,17 @@ export function summarize(
 }
 
 export function prettyTable(s: Summary, label: string): string {
-  const fmtUs = (ns: number) => (ns / 1000).toFixed(1) + "us";
+  const fmtMs = (ns: number) => (ns / 1_000_000).toFixed(2) + "ms";
   const lines = [
     `--- ${label} ---`,
     `requests   : ${s.requests_total}`,
     `errors     : ${s.errors_total}`,
     `duration_s : ${s.duration_s.toFixed(2)}`,
     `throughput : ${s.throughput_rps.toFixed(1)} rps`,
-    `latency p50: ${fmtUs(s.latency_ns.p50)}`,
-    `latency p95: ${fmtUs(s.latency_ns.p95)}`,
-    `latency p99: ${fmtUs(s.latency_ns.p99)}`,
-    `latency max: ${fmtUs(s.latency_ns.max)}`,
+    `latency p50: ${fmtMs(s.latency_ns.p50)}`,
+    `latency p95: ${fmtMs(s.latency_ns.p95)}`,
+    `latency p99: ${fmtMs(s.latency_ns.p99)}`,
+    `latency max: ${fmtMs(s.latency_ns.max)}`,
     `bytes in   : ${s.bytes_in_total}`,
     `bytes out  : ${s.bytes_out_total}`,
     `users      : ${s.concurrency_actual}`,

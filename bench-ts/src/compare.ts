@@ -21,7 +21,7 @@ export async function compare(paths: string[]): Promise<void> {
   const baseline = results[baselineIdx >= 0 ? baselineIdx : 0];
 
   const rows: string[][] = [];
-  const headers = ["transport", "users", "N", "rps", "p50us", "p95us", "p99us", "vs rest p95"];
+  const headers = ["transport", "users", "N", "rps", "p50ms", "p95ms", "p99ms", "vs rest p95"];
   rows.push(headers);
   for (const r of results) {
     const s = r.summary;
@@ -33,9 +33,9 @@ export async function compare(paths: string[]): Promise<void> {
       String(r.meta.users),
       String(r.meta.matrix_size),
       s.throughput_rps.toFixed(1),
-      (s.latency_ns.p50 / 1000).toFixed(1),
-      (s.latency_ns.p95 / 1000).toFixed(1),
-      (s.latency_ns.p99 / 1000).toFixed(1),
+      (s.latency_ns.p50 / 1_000_000).toFixed(2),
+      (s.latency_ns.p95 / 1_000_000).toFixed(2),
+      (s.latency_ns.p99 / 1_000_000).toFixed(2),
       pct(dp95),
     ]);
   }

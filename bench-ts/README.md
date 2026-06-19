@@ -73,10 +73,10 @@ Prints a side-by-side table with relative deltas. Example output:
                      tcp           grpc          rest
 requests_total       312450        285100        88320
 throughput_rps       10415         9503          2944
-latency p50          89us          102us         335us
-latency p95          142us         178us         542us
-latency p99          220us         310us         820us
-latency max          5100us        4800us        12000us
+latency p50          0.09ms        0.10ms        0.34ms
+latency p95          0.14ms        0.18ms        0.54ms
+latency p99          0.22ms        0.31ms        0.82ms
+latency max          5.10ms        4.80ms        12.00ms
   vs tcp                           +25% p95      +282% p95
 ```
 
