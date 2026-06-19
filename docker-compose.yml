@@ -1,0 +1,54 @@
+version: "3.9"
+services:
+  kirk-server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: kirk-server:dev
+    container_name: kirk-server
+    ports:
+      - "50051:50051"
+      - "8080:8080"
+      - "9090:9090"
+    environment:
+      RUST_LOG: info
+      KIRK_WORKERS: "0"
+      KIRK_TEMPERATURE: "1.0"
+    # SEC-009: the distroless runtime image has neither `wget` nor a shell, so
+    # we use the server's own `--healthcheck` CLI flag (one-shot HTTP GET to
+    # `/healthz`, exits 0 on 200) as the docker `CMD` probe.
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/kirk-server", "--healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    mem_limit: 1g
+
+  bench:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.bench
+    image: kirk-bench:dev
+    profiles: ["bench"]
+    depends_on:
+      kirk-server:
+        condition: service_healthy
+    environment:
+      TRANSPORT: ${TRANSPORT:-tcp}
+      USERS: ${USERS:-50}
+      DURATION: ${DURATION:-30s}
+      MATRIX_SIZE: ${MATRIX_SIZE:-32}
+      OP: ${OP:-forward}
+    command:
+      - "run"
+      - "--transport=${TRANSPORT:-tcp}"
+      - "--host=kirk-server"
+      - "--users=${USERS:-50}"
+      - "--duration=${DURATION:-30s}"
+      - "--matrix-size=${MATRIX_SIZE:-32}"
+      - "--op=${OP:-forward}"
+      - "--output=/results/${TRANSPORT:-tcp}-${MATRIX_SIZE:-32}.json"
+    volumes:
+      - ./bench-ts/results:/results

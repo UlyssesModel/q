@@ -1,0 +1,19 @@
+[workspace]
+resolver = "2"
+members = ["kirk-stub-realistic", "kirk-server"]
+
+[workspace.package]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+rust-version = "1.80"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+opt-level = 3
+debug = false
+panic = "abort"
+
+[profile.bench]
+lto = "thin"
+opt-level = 3
