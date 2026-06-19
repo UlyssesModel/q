@@ -1,0 +1,4 @@
+2026-06-19T18:59:37Z orchestrator INIT created branch on-loop/rest-user-docs
+2026-06-19T18:59:37Z orchestrator INIT created worktree .claude/worktrees/rest-user-docs
+2026-06-19T18:59:37Z orchestrator INIT created session dir; scope is docs-only — SPEC/CODE/TEST/SECURITY/BUILD phases skipped
+2026-06-19T19:05:00Z documentation DOC /Users/charmalloc/dev/kavara/q/.claude/worktrees/rest-user-docs/docs/REST.md
