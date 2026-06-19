@@ -2,6 +2,19 @@
   "version": "1.0",
   "sessions": [
     {
+      "session_id": "2e67261d-a00c-40f6-85e3-1f06da886fb3",
+      "session_name": "20260619_185937_rest-user-docs",
+      "loop_id": "2e67261d-a00c-40f6-85e3-1f06da886fb3",
+      "prompt": "create docs for the REST interface as user docs markdown in docs",
+      "branch": "on-loop/rest-user-docs",
+      "status": "active",
+      "started_at": "2026-06-19T18:59:37Z",
+      "completed_at": null,
+      "worktree_path": ".claude/worktrees/rest-user-docs",
+      "session_dir": ".on-loop/sessions/20260619_185937_rest-user-docs",
+      "pr_url": null
+    },
+    {
       "session_id": "fd99cf97-06df-4fb6-bc6d-1013605552dc",
       "session_name": "20260616_201914_kirk-stub-rs-multiproto",
       "loop_id": "fd99cf97-06df-4fb6-bc6d-1013605552dc",

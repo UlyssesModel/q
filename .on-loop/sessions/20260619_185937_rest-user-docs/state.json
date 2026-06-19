@@ -1,0 +1,20 @@
+{
+  "version": "1.1",
+  "loop_id": "2e67261d-a00c-40f6-85e3-1f06da886fb3",
+  "session_id": "2e67261d-a00c-40f6-85e3-1f06da886fb3",
+  "prompt": "create docs for the REST interface as user docs markdown in docs",
+  "phase": "DOC",
+  "started_at": "2026-06-19T18:59:37Z",
+  "updated_at": "2026-06-19T18:59:37Z",
+  "branch": "on-loop/rest-user-docs",
+  "worktree_path": ".claude/worktrees/rest-user-docs",
+  "session_dir": ".on-loop/sessions/20260619_185937_rest-user-docs",
+  "pr_url": null,
+  "retries": {"test_to_code": 0, "security_to_code": 0, "review_to_code": 0},
+  "max_retries": {"test_to_code": 3, "security_to_code": 2, "review_to_code": 2},
+  "phases_completed": ["INIT"],
+  "current_agent": "documentation",
+  "error": null,
+  "todos": [],
+  "scope_note": "Docs-only task — CODE/TEST/SECURITY/BUILD phases skipped (no source code or tests change)."
+}
