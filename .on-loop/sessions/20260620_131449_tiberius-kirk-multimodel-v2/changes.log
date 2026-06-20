@@ -1,0 +1,40 @@
+2026-06-20T13:14:49Z orchestrator INIT created branch on-loop/tiberius-kirk-multimodel-v2
+2026-06-20T13:14:49Z orchestrator INIT created worktree .claude/worktrees/tiberius-kirk-multimodel-v2
+2026-06-20T13:14:49Z orchestrator INIT created session dir
+2026-06-20T14:04:54Z architect SPEC wrote agent-notes/architect.md (FR-001..023, NFR-001..007, ADR-001..005, 2 mermaid diagrams, v2 schemas, opsec rules)
+2026-06-20T17:00:55Z coding CODE kirk-stub-kirk/Cargo.toml — new crate manifest (ndarray, bon, getset, num-complex, num-traits, ndarray-rand, rand_xoshiro, serde; no ndarray-linalg)
+2026-06-20T17:00:55Z coding CODE kirk-stub-kirk/src/lib.rs — public re-exports, #![forbid(unsafe_code)]
+2026-06-20T17:00:55Z coding CODE kirk-stub-kirk/src/kirk.rs — Kirk struct + bon Builder + KirkBuilder<S>::build + 5 public methods (stub bodies, no secret-stage names)
+2026-06-20T17:00:55Z coding CODE Cargo.toml — added kirk-stub-kirk to workspace members
+2026-06-20T17:00:55Z coding CODE kirk-server/Cargo.toml — added kirk-stub-kirk dep, ndarray, secret-kirk-edge feature stub
+2026-06-20T17:00:55Z coding CODE kirk-server/src/model.rs — new trait ModelBackend (async, Arc<Self>)
+2026-06-20T17:00:55Z coding CODE kirk-server/src/backends/mod.rs — backends module declarations
+2026-06-20T17:00:55Z coding CODE kirk-server/src/backends/tiberius.rs — TiberiusBackend (lifts existing KirkBackend body)
+2026-06-20T17:00:55Z coding CODE kirk-server/src/backends/kirk_local.rs — KirkLocalBackend wrapping kirk_stub_kirk::Kirk
+2026-06-20T17:00:55Z coding CODE kirk-server/src/backends/kirk_prod.rs — cfg-gated KirkProdBackend stub against secret_kirk_edge::Kirk
+2026-06-20T17:00:55Z coding CODE kirk-server/src/backends/factory.rs — select_backend(cfg) dispatcher
+2026-06-20T17:00:55Z coding MODIFY kirk-server/src/backend.rs — KirkBackend now Arc<dyn ModelBackend>; transports unchanged
+2026-06-20T17:00:55Z coding MODIFY kirk-server/src/config.rs — added Model, Env enums and --model, --env flags
+2026-06-20T17:00:55Z coding MODIFY kirk-server/src/lib.rs — added backends, model modules; ServerSettings carries model+env
+2026-06-20T17:00:55Z coding MODIFY kirk-server/src/main.rs — --env prod + --model kirk reject path (no URL leak)
+2026-06-20T17:00:55Z coding CODE kirk-server/src/rest/schema_v2.rs — nested [re, im] serde envelopes + parse_matrix_v2
+2026-06-20T17:00:55Z coding CODE kirk-server/src/rest/routes_v2.rs — 7 v2 handlers
+2026-06-20T17:00:55Z coding MODIFY kirk-server/src/rest/mod.rs — added routes_v2, schema_v2 modules
+2026-06-20T17:00:55Z coding MODIFY kirk-server/src/rest/routes.rs — exposed err_response/ok_json/time_observe, mounted v2 routes
+2026-06-20T17:00:55Z coding MODIFY kirk-server/tests/tcp_integration.rs — ServerSettings struct gained model+env fields
+2026-06-20T17:00:55Z coding CODE docs/SECURE_BUILD.md — secure build stub (no URL)
+2026-06-20T17:00:55Z coding CODE docs/MODELS.md — model selector stub
+2026-06-20T17:00:55Z coding CODE scripts/check-default-build-clean.sh — CI guard (Cargo.lock + metadata)
+2026-06-20T17:00:55Z coding MODIFY .github/workflows/ci.yml — added "Assert default build is clean" step
+2026-06-20T17:00:55Z coding MODIFY docker/Dockerfile — explicit comment that default features only
+2026-06-20T18:30:00Z security AUDIT wrote agent-notes/security.md (delta audit: Rule 1 PASS, Rule 2 PASS, feature isolation PASS, runtime refusal PASS, /v2 attack surface PASS, dispatch concurrency PASS, cargo audit clean; 0 CRITICAL/HIGH/MEDIUM/LOW, 2 INFO; verdict PASS)
+2026-06-20T19:00:00Z build FIX docker/Dockerfile — added Cargo.lock to workspace-root COPY; added COPY kirk-stub-kirk (missing path dep, would have broken Docker build)
+2026-06-20T19:00:00Z build ADD .github/workflows/ci.yml — new parallel job feature-isolation running check-default-build-clean.sh independently of rust job
+2026-06-20T19:00:00Z build ADD Makefile — check-secure-isolation target (runs scripts/check-default-build-clean.sh); build-secure target (prints operator instructions); updated .PHONY and header comments
+2026-06-20T19:00:00Z build VERIFY cargo fmt --all -- --check: PASS; RUSTFLAGS=-D warnings clippy --workspace --all-targets: PASS; cargo test --workspace --lib --bins: 28 passed; cargo audit --ignore RUSTSEC-2024-0436: 0 advisories; scripts/check-default-build-clean.sh: default build is clean
+2026-06-20T19:00:00Z build NOTES wrote agent-notes/build.md
+2026-06-20T19:15:00Z documentation DOC docs/REST.md — added "API Versions: v1 vs v2" section (comparison table, size numbers, precision note, when-to-use guidance); retitled v1 section; added full v2 Endpoint Reference covering all 7 v2 routes with request/response shapes, curl examples, field tables; updated config cheat-sheet and limits
+2026-06-20T19:15:00Z documentation DOC docs/MODELS.md — expanded stub to full model reference: Tiberius numerical basis, Kirk stub characteristics, decision matrix for all (model, env, feature) combinations, numerical differences table, config examples
+2026-06-20T19:15:00Z documentation DOC docs/SECURE_BUILD.md — expanded stub to full operator guide: prerequisites, Cargo.toml patch workflow, build command, opsec rules, deviation note, upgrade path; Tailnet URL documented here and nowhere else
+2026-06-20T19:15:00Z documentation DOC agent-notes/documentation.md — wrote documentation agent notes (decisions, drift caught, issues found)
+2026-06-20T20:00:00Z reviewer REVIEW wrote agent-notes/reviewer.md (delta review: Rule 1 PASS, Rule 2 PASS, fmt/clippy/test/audit/isolation gates all PASS; found 2 REQUEST_CHANGES doc-code drifts: MODELS.md decision matrix row 105 and contradictory note 113 say (tiberius,prod,off) is rejected when code allows it; SECURE_BUILD.md Step 1 claims dep:secret-kirk-edge feature binding is already present in the committed manifest when manifest has secret-kirk-edge=[]; 3 NITs (no v2 integration test, inference_entropy docstring caveat, make ci does not call check-secure-isolation); verdict REQUEST_CHANGES)

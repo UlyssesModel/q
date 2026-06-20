@@ -10,12 +10,16 @@ WORKDIR /workspace
 
 # Copy the workspace into the builder. The .dockerignore should keep target/
 # and node_modules out so this is reasonably small.
-COPY Cargo.toml rust-toolchain.toml ./
+COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 COPY proto ./proto
 COPY kirk-stub-realistic ./kirk-stub-realistic
+COPY kirk-stub-kirk ./kirk-stub-kirk
 COPY kirk-server ./kirk-server
 
 # Build only the release binary.
+#
+# Default features ONLY. The shipped image must never enable the gated
+# secure feature; see docs/SECURE_BUILD.md for the operator workflow.
 RUN cargo build --release -p kirk-server
 
 # Distroless runtime — no shell, just the binary.

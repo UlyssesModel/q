@@ -6,13 +6,26 @@
 use std::time::Duration;
 
 use clap::Parser;
-use kirk_server::{start_server_with, Config, ServerSettings};
+use kirk_server::{start_server_with, Config, Env, Model, ServerSettings};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpStream;
 use tracing_subscriber::EnvFilter;
 
 fn main() -> anyhow::Result<()> {
     let cfg = Config::parse();
+
+    // `--env prod` requires the secure feature; refuse to start otherwise.
+    // The diagnostic intentionally mentions only the docs path — never the
+    // private upstream URL or crate name.
+    if matches!(cfg.env, Env::Prod) && matches!(cfg.model, Model::Kirk) {
+        #[cfg(not(feature = "secret-kirk-edge"))]
+        {
+            eprintln!(
+                "--env prod requires a build with the secure feature; see docs/SECURE_BUILD.md"
+            );
+            std::process::exit(2);
+        }
+    }
 
     // SEC-009: `--healthcheck` is a one-shot HTTP GET probe used by the
     // docker-compose healthcheck. Bypass the full server bring-up.

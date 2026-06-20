@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["kirk-stub-realistic", "kirk-server"]
+members = ["kirk-stub-realistic", "kirk-stub-kirk", "kirk-server"]
 
 [workspace.package]
 edition = "2021"

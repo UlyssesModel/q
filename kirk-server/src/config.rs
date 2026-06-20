@@ -1,6 +1,26 @@
 //! CLI configuration via clap.
 
-use clap::Parser;
+use clap::{Parser, ValueEnum};
+
+/// Model selector. `tiberius` is the existing Boltzmann/Shannon kernel.
+/// `kirk` is the stub crate locally; in `--env prod` with the secure feature,
+/// the production variant is selected at startup instead.
+#[derive(Debug, Clone, Copy, Default, ValueEnum, PartialEq, Eq)]
+#[clap(rename_all = "lower")]
+pub enum Model {
+    #[default]
+    Tiberius,
+    Kirk,
+}
+
+/// Runtime environment. `prod` requires a build with the secure feature.
+#[derive(Debug, Clone, Copy, Default, ValueEnum, PartialEq, Eq)]
+#[clap(rename_all = "lower")]
+pub enum Env {
+    #[default]
+    Local,
+    Prod,
+}
 
 /// Hard upper bound on `--max-matrix-dim` (architect spec § Security Considerations S-001).
 pub const MAX_ALLOWED_MATRIX_DIM: u32 = 4096;
@@ -99,6 +119,15 @@ pub struct Config {
     /// distroless runtime image has neither `wget` nor a shell — see SEC-009.
     #[arg(long)]
     pub healthcheck: bool,
+
+    /// Model selector: `tiberius` (default) or `kirk`.
+    #[arg(long, env = "KIRK_MODEL", value_enum, default_value_t = Model::default())]
+    pub model: Model,
+
+    /// Runtime environment: `local` (default) or `prod`. `prod` requires a build
+    /// with the secure feature; see `docs/SECURE_BUILD.md`.
+    #[arg(long, env = "KIRK_ENV", value_enum, default_value_t = Env::default())]
+    pub env: Env,
 }
 
 impl Config {
