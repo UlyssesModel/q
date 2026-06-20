@@ -25,7 +25,7 @@ function defaultPort(transport: string): number {
 
 function makeTransport(opts: RunOptions): TransportClient {
   switch (opts.transport) {
-    case "rest": return new RestClient(opts.host, opts.port);
+    case "rest": return new RestClient(opts.host, opts.port, opts.apiVersion);
     case "grpc": return new GrpcClient(opts.host, opts.port);
     case "tcp":  return new TcpClient(opts.host, opts.port);
   }
@@ -34,6 +34,7 @@ function makeTransport(opts: RunOptions): TransportClient {
 export async function run(rawOpts: Partial<RunOptions>): Promise<void> {
   const opts: RunOptions = {
     transport: rawOpts.transport ?? "rest",
+    apiVersion: rawOpts.apiVersion ?? "v1",
     host: rawOpts.host ?? "localhost",
     port: rawOpts.port ?? defaultPort(rawOpts.transport ?? "rest"),
     users: rawOpts.users ?? 10,
@@ -123,6 +124,7 @@ export async function run(rawOpts: Partial<RunOptions>): Promise<void> {
   const file: ResultFile = {
     meta: {
       transport: opts.transport,
+      api_version: opts.apiVersion,
       host: opts.host,
       port: opts.port,
       users: opts.users,
