@@ -1,0 +1,19 @@
+{
+  "version": "1.1",
+  "loop_id": "4cac37fe-df06-4872-aaca-c7fc3a82d975",
+  "session_id": "4cac37fe-df06-4872-aaca-c7fc3a82d975",
+  "prompt": "Multi-model selector (tiberius=existing kernel, kirk=new skeleton from pasted prototype), --env local|prod with feature-gated secure crate at https://git-kavara.ibis-allosaurus.ts.net/kavara-ai/secret-kirk-edge-v2.git, REST /v2 JSON-array endpoints alongside /v1 base64.",
+  "phase": "GIT",
+  "started_at": "2026-06-20T13:14:49Z",
+  "updated_at": "2026-06-20T19:45:00Z",
+  "branch": "on-loop/tiberius-kirk-multimodel-v2",
+  "worktree_path": ".claude/worktrees/tiberius-kirk-multimodel-v2",
+  "session_dir": ".on-loop/sessions/20260620_131449_tiberius-kirk-multimodel-v2",
+  "pr_url": null,
+  "retries": {"test_to_code": 0, "security_to_code": 0, "review_to_code": 0},
+  "max_retries": {"test_to_code": 3, "security_to_code": 2, "review_to_code": 2},
+  "phases_completed": ["INIT", "SPEC", "PLAN", "CODE", "TEST", "SECURITY", "DOC", "BUILD", "REVIEW"],
+  "current_agent": "orchestrator",
+  "error": null,
+  "todos": []
+}

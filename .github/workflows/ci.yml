@@ -53,6 +53,11 @@ jobs:
       - name: Clippy (deny warnings)
         run: cargo clippy --workspace --all-targets -- -D warnings
 
+      - name: Assert default build is clean
+        # Default features only. Guards against an accidental opt-in to the
+        # gated secure dependency. See scripts/check-default-build-clean.sh.
+        run: bash scripts/check-default-build-clean.sh
+
       - name: Test (lib + bins)
         run: cargo test --workspace --lib --bins
 
@@ -103,6 +108,33 @@ jobs:
 
       - name: Build bench image
         run: docker compose build bench
+
+  feature-isolation:
+    name: Feature isolation (secret-kirk-edge must not resolve)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry + index
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-registry-
+
+      - name: Assert default build is clean
+        # Verifies that the secret-kirk-edge crate is NOT present in
+        # cargo metadata or Cargo.lock under default features.
+        # Fails with exit 1 if the gated dep resolves — guards against
+        # accidental feature activation in CI or Docker.
+        run: bash scripts/check-default-build-clean.sh
 
   audit:
     name: cargo audit

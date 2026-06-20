@@ -5,17 +5,20 @@
 #![forbid(unsafe_code)]
 
 pub mod backend;
+pub mod backends;
 pub mod config;
 pub mod error;
 pub mod grpc;
 pub mod metrics;
+pub mod model;
 pub mod rest;
 pub mod shutdown;
 pub mod tcp;
 
 pub use backend::KirkBackend;
 pub use config::{
-    Config, DEFAULT_MAX_CONNECTIONS, DEFAULT_MAX_IN_FLIGHT, DEFAULT_TCP_WRITE_TIMEOUT_MS,
+    Config, Env, Model, DEFAULT_MAX_CONNECTIONS, DEFAULT_MAX_IN_FLIGHT,
+    DEFAULT_TCP_WRITE_TIMEOUT_MS,
 };
 pub use metrics::MetricsHandle;
 pub use shutdown::ShutdownHandle;
@@ -67,6 +70,8 @@ pub struct ServerSettings {
     pub max_connections: u32,
     pub max_in_flight_per_conn: u32,
     pub tcp_write_timeout: Duration,
+    pub model: Model,
+    pub env: Env,
 }
 
 impl ServerSettings {
@@ -83,6 +88,29 @@ impl ServerSettings {
             max_connections: cfg.max_connections,
             max_in_flight_per_conn: cfg.max_in_flight_per_conn,
             tcp_write_timeout: Duration::from_millis(cfg.tcp_write_timeout_ms),
+            model: cfg.model,
+            env: cfg.env,
+        }
+    }
+
+    /// Recover a partial `Config` that's sufficient for `backend::KirkBackend::from_config`.
+    fn to_config(&self) -> Config {
+        Config {
+            grpc_port: self.grpc_port,
+            rest_port: self.rest_port,
+            tcp_port: self.tcp_port,
+            bind: self.bind.clone(),
+            workers: 0,
+            temperature: self.temperature,
+            window_size: self.window_size,
+            max_matrix_dim: self.max_matrix_dim,
+            max_connections: self.max_connections,
+            max_in_flight_per_conn: self.max_in_flight_per_conn,
+            tcp_write_timeout_ms: self.tcp_write_timeout.as_millis() as u64,
+            log_level: "info".to_string(),
+            healthcheck: false,
+            model: self.model,
+            env: self.env,
         }
     }
 }
@@ -108,17 +136,18 @@ pub async fn start_server(
         max_connections: DEFAULT_MAX_CONNECTIONS,
         max_in_flight_per_conn: DEFAULT_MAX_IN_FLIGHT,
         tcp_write_timeout: Duration::from_millis(DEFAULT_TCP_WRITE_TIMEOUT_MS),
+        model: Model::default(),
+        env: Env::default(),
     };
     start_server_with(settings).await
 }
 
 /// Spawn a full three-transport server using the given `settings`.
 pub async fn start_server_with(settings: ServerSettings) -> anyhow::Result<ServerHandle> {
-    let backend = KirkBackend::new(
-        settings.temperature,
-        settings.window_size,
-        settings.max_matrix_dim,
-    )?;
+    let cfg = settings.to_config();
+    let backend =
+        KirkBackend::from_config(&cfg).map_err(|e| anyhow::anyhow!("backend init failed: {e}"))?;
+    tracing::info!(backend = backend.name(), "backend selected");
     let metrics = MetricsHandle::new();
     let shutdown = ShutdownHandle::new();
     let shutdown_flag = Arc::new(std::sync::atomic::AtomicBool::new(false));

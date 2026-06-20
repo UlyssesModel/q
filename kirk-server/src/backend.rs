@@ -1,93 +1,72 @@
-//! Shared backend: one `Arc<KirkBackend>` driven by all three transports.
+//! Server-side backend wrapper. Holds an `Arc<dyn ModelBackend>` and the
+//! transport-wide configuration that does not vary per (model, env) — the
+//! matrix-dim cap and a shutdown flag.
 
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
-use kirk_stub_realistic::variants::{
-    active_inference, active_inference_entropy, active_inference_features, inference_entropy,
-    inference_features, ActiveInferenceOut, Features,
-};
-use kirk_stub_realistic::{forward_sample, KirkOutput, KirkRealistic, KirkSampleOutput};
-use parking_lot::Mutex;
-use rand::SeedableRng;
-use rand_xoshiro::Xoshiro256StarStar;
+use kirk_stub_realistic::variants::{ActiveInferenceOut, Features};
+use kirk_stub_realistic::{KirkOutput, KirkSampleOutput};
 
+use crate::backends::select_backend;
+use crate::config::Config;
 use crate::error::ServerError;
+use crate::model::ModelBackend;
 
-/// `spawn_blocking` threshold per ADR-007.
-pub const SPAWN_BLOCKING_THRESHOLD: usize = 128;
+/// Re-exported `spawn_blocking` threshold (preserved for callers that import
+/// it from this module).
+pub use crate::backends::tiberius::SPAWN_BLOCKING_THRESHOLD;
 
+/// Transport-facing wrapper. All three transports clone an `Arc<KirkBackend>`.
+/// Internally the wrapper delegates compute to a `dyn ModelBackend`; the
+/// matrix-dim cap and the shutdown flag live on the chosen backend.
 pub struct KirkBackend {
-    pub kirk: Mutex<KirkRealistic>,
+    inner: Arc<dyn ModelBackend>,
     pub max_matrix_dim: u32,
-    shutdown: AtomicBool,
 }
 
 impl KirkBackend {
+    /// Default constructor used by `start_server*` shims. Builds a TiberiusBackend
+    /// — preserves the pre-multimodel test fixture surface.
     pub fn new(
         temperature: f32,
         window_size: usize,
         max_matrix_dim: u32,
     ) -> anyhow::Result<Arc<Self>> {
-        let kirk = KirkRealistic::new(temperature, window_size)?;
+        let inner =
+            crate::backends::TiberiusBackend::new(temperature, window_size, max_matrix_dim)?;
         Ok(Arc::new(Self {
-            kirk: Mutex::new(kirk),
+            inner: inner as Arc<dyn ModelBackend>,
             max_matrix_dim,
-            shutdown: AtomicBool::new(false),
         }))
     }
 
+    /// Build from a parsed `Config`. Inspects `--model` and `--env`.
+    pub fn from_config(cfg: &Config) -> Result<Arc<Self>, ServerError> {
+        let inner = select_backend(cfg)?;
+        Ok(Arc::new(Self {
+            inner,
+            max_matrix_dim: cfg.max_matrix_dim,
+        }))
+    }
+
+    /// Short, stable name for logs / metrics.
+    pub fn name(&self) -> &'static str {
+        self.inner.name()
+    }
+
     pub fn signal_shutdown(&self) {
-        self.shutdown.store(true, Ordering::SeqCst);
+        self.inner.signal_shutdown();
     }
 
     pub fn is_shutting_down(&self) -> bool {
-        self.shutdown.load(Ordering::SeqCst)
+        self.inner.is_shutting_down()
     }
 
-    /// Validate the matrix dimension N supplied by a request.
-    ///
-    /// - Rejects `n == 0` (degenerate) and `n == 1` (the entropy/confidence
-    ///   formula and the rolling-window z-score are mathematically degenerate
-    ///   at N=1 — see SEC-008). Minimum allowed dim is therefore 2.
-    /// - Rejects `n > max_matrix_dim` (the configured operator-side ceiling,
-    ///   itself clamped to `[1, 4096]` by clap).
-    /// - Also rejects values above the per-process arithmetic ceiling — see
-    ///   `MAX_ALLOWED_MATRIX_DIM`.
+    /// Validate the matrix dimension N supplied by a request. Min dim is 2.
     pub fn check_dim(&self, n: u32) -> Result<(), ServerError> {
-        if n > self.max_matrix_dim {
-            Err(ServerError::MatrixDimExceeded {
-                actual: n,
-                limit: self.max_matrix_dim,
-            })
-        } else if n < 2 {
-            Err(ServerError::BadRequest(
-                "matrix dim must be >= 2 (N=0 is empty, N=1 leaves entropy / confidence undefined)"
-                    .into(),
-            ))
-        } else {
-            Ok(())
-        }
+        self.inner.check_dim(n)
     }
 
-    /// Synchronous `forward`. Holds the kirk mutex for the duration of the call.
-    pub fn forward_sync(
-        &self,
-        matrix_re: &[f32],
-        matrix_im: &[f32],
-        n: usize,
-        timestamp_us: i64,
-    ) -> Result<KirkOutput, ServerError> {
-        if self.is_shutting_down() {
-            return Err(ServerError::Shutdown);
-        }
-        let mut guard = self.kirk.lock();
-        guard
-            .forward(matrix_re, matrix_im, n, timestamp_us)
-            .map_err(ServerError::from)
-    }
-
-    /// Async `forward` that hops to `spawn_blocking` when N is large.
     pub async fn forward(
         self: Arc<Self>,
         matrix_re: Vec<f32>,
@@ -95,16 +74,10 @@ impl KirkBackend {
         n: usize,
         timestamp_us: i64,
     ) -> Result<KirkOutput, ServerError> {
-        if n >= SPAWN_BLOCKING_THRESHOLD {
-            let me = self.clone();
-            tokio::task::spawn_blocking(move || {
-                me.forward_sync(&matrix_re, &matrix_im, n, timestamp_us)
-            })
+        self.inner
+            .clone()
+            .forward(matrix_re, matrix_im, n, timestamp_us)
             .await
-            .map_err(|e| ServerError::Internal(format!("join: {e}")))?
-        } else {
-            self.forward_sync(&matrix_re, &matrix_im, n, timestamp_us)
-        }
     }
 
     pub async fn inference_entropy(
@@ -113,17 +86,7 @@ impl KirkBackend {
         im: Vec<f32>,
         n: usize,
     ) -> Result<f32, ServerError> {
-        if self.is_shutting_down() {
-            return Err(ServerError::Shutdown);
-        }
-        if n >= SPAWN_BLOCKING_THRESHOLD {
-            tokio::task::spawn_blocking(move || inference_entropy(&re, &im, n))
-                .await
-                .map_err(|e| ServerError::Internal(format!("join: {e}")))?
-                .map_err(ServerError::from)
-        } else {
-            inference_entropy(&re, &im, n).map_err(ServerError::from)
-        }
+        self.inner.clone().inference_entropy(re, im, n).await
     }
 
     pub async fn inference_features(
@@ -132,17 +95,7 @@ impl KirkBackend {
         im: Vec<f32>,
         n: usize,
     ) -> Result<Features, ServerError> {
-        if self.is_shutting_down() {
-            return Err(ServerError::Shutdown);
-        }
-        if n >= SPAWN_BLOCKING_THRESHOLD {
-            tokio::task::spawn_blocking(move || inference_features(&re, &im, n))
-                .await
-                .map_err(|e| ServerError::Internal(format!("join: {e}")))?
-                .map_err(ServerError::from)
-        } else {
-            inference_features(&re, &im, n).map_err(ServerError::from)
-        }
+        self.inner.clone().inference_features(re, im, n).await
     }
 
     pub async fn active_inference(
@@ -151,17 +104,7 @@ impl KirkBackend {
         im: Vec<f32>,
         n: usize,
     ) -> Result<ActiveInferenceOut, ServerError> {
-        if self.is_shutting_down() {
-            return Err(ServerError::Shutdown);
-        }
-        if n >= SPAWN_BLOCKING_THRESHOLD {
-            tokio::task::spawn_blocking(move || active_inference(&re, &im, n))
-                .await
-                .map_err(|e| ServerError::Internal(format!("join: {e}")))?
-                .map_err(ServerError::from)
-        } else {
-            active_inference(&re, &im, n).map_err(ServerError::from)
-        }
+        self.inner.clone().active_inference(re, im, n).await
     }
 
     pub async fn active_inference_entropy(
@@ -170,17 +113,7 @@ impl KirkBackend {
         im: Vec<f32>,
         n: usize,
     ) -> Result<f32, ServerError> {
-        if self.is_shutting_down() {
-            return Err(ServerError::Shutdown);
-        }
-        if n >= SPAWN_BLOCKING_THRESHOLD {
-            tokio::task::spawn_blocking(move || active_inference_entropy(&re, &im, n))
-                .await
-                .map_err(|e| ServerError::Internal(format!("join: {e}")))?
-                .map_err(ServerError::from)
-        } else {
-            active_inference_entropy(&re, &im, n).map_err(ServerError::from)
-        }
+        self.inner.clone().active_inference_entropy(re, im, n).await
     }
 
     pub async fn active_inference_features(
@@ -189,17 +122,10 @@ impl KirkBackend {
         im: Vec<f32>,
         n: usize,
     ) -> Result<Features, ServerError> {
-        if self.is_shutting_down() {
-            return Err(ServerError::Shutdown);
-        }
-        if n >= SPAWN_BLOCKING_THRESHOLD {
-            tokio::task::spawn_blocking(move || active_inference_features(&re, &im, n))
-                .await
-                .map_err(|e| ServerError::Internal(format!("join: {e}")))?
-                .map_err(ServerError::from)
-        } else {
-            active_inference_features(&re, &im, n).map_err(ServerError::from)
-        }
+        self.inner
+            .clone()
+            .active_inference_features(re, im, n)
+            .await
     }
 
     pub async fn forward_sample(
@@ -207,19 +133,84 @@ impl KirkBackend {
         n: usize,
         seed: u64,
     ) -> Result<KirkSampleOutput, ServerError> {
-        if self.is_shutting_down() {
-            return Err(ServerError::Shutdown);
+        self.inner.clone().forward_sample(n, seed).await
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::config::{Env, Model};
+
+    fn base_config() -> Config {
+        Config {
+            grpc_port: 0,
+            rest_port: 0,
+            tcp_port: 0,
+            bind: "127.0.0.1".to_string(),
+            workers: 0,
+            temperature: 1.0,
+            window_size: 256,
+            max_matrix_dim: 64,
+            max_connections: 8,
+            max_in_flight_per_conn: 8,
+            tcp_write_timeout_ms: 1000,
+            log_level: "info".to_string(),
+            healthcheck: false,
+            model: Model::Tiberius,
+            env: Env::Local,
         }
-        if n >= SPAWN_BLOCKING_THRESHOLD {
-            tokio::task::spawn_blocking(move || {
-                let mut rng = Xoshiro256StarStar::seed_from_u64(seed);
-                forward_sample(n, &mut rng)
-            })
-            .await
-            .map_err(|e| ServerError::Internal(format!("join: {e}")))
-        } else {
-            let mut rng = Xoshiro256StarStar::seed_from_u64(seed);
-            Ok(forward_sample(n, &mut rng))
-        }
+    }
+
+    #[test]
+    fn factory_tiberius_local() {
+        let cfg = base_config();
+        let b = KirkBackend::from_config(&cfg).expect("tiberius/local must build");
+        assert_eq!(b.name(), "tiberius");
+        assert!(b.check_dim(8).is_ok());
+        assert!(b.check_dim(1).is_err());
+        assert!(b.check_dim(65).is_err());
+    }
+
+    #[test]
+    fn factory_kirk_local() {
+        let mut cfg = base_config();
+        cfg.model = Model::Kirk;
+        let b = KirkBackend::from_config(&cfg).expect("kirk/local must build");
+        assert_eq!(b.name(), "kirk");
+    }
+
+    #[test]
+    fn factory_tiberius_prod_allowed() {
+        let mut cfg = base_config();
+        cfg.env = Env::Prod;
+        let b = KirkBackend::from_config(&cfg).expect("tiberius/prod must build");
+        assert_eq!(b.name(), "tiberius");
+    }
+
+    #[test]
+    #[cfg(not(feature = "secret-kirk-edge"))]
+    fn factory_kirk_prod_without_feature_rejected() {
+        let mut cfg = base_config();
+        cfg.env = Env::Prod;
+        cfg.model = Model::Kirk;
+        let result = KirkBackend::from_config(&cfg);
+        let err = match result {
+            Ok(_) => panic!("kirk/prod must reject without secret-kirk-edge feature"),
+            Err(e) => e,
+        };
+        let msg = err.to_string();
+        assert!(
+            msg.contains("--env prod"),
+            "error must mention --env prod, got: {msg}"
+        );
+        assert!(
+            !msg.contains("secret-kirk-edge-v2.git"),
+            "error must not leak the secret git URL, got: {msg}"
+        );
+        assert!(
+            !msg.contains("ibis-allosaurus"),
+            "error must not leak Tailnet host, got: {msg}"
+        );
     }
 }

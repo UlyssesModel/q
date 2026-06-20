@@ -4,6 +4,7 @@ import type { Summary } from "./summary.ts";
 
 export interface RunOptions {
   transport: "grpc" | "rest" | "tcp";
+  apiVersion: "v1" | "v2";
   host: string;
   port: number;
   users: number;
@@ -20,6 +21,7 @@ export interface RunOptions {
 export interface ResultFile {
   meta: {
     transport: string;
+    api_version: string;
     host: string;
     port: number;
     users: number;

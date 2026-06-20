@@ -17,7 +17,9 @@ SHELL := /bin/bash
 #   make bench-compare  — run all three transports sequentially and print compare
 #   make compare        — bun src/cli.ts compare results/*.json
 #   make proto-sync     — copy proto/kirk.proto into bench-ts/proto/
-#   make clean          — cargo clean + remove bench-ts/results + node_modules
+#   make clean                 — cargo clean + remove bench-ts/results + node_modules
+#   make check-secure-isolation — assert default build does not resolve secret-kirk-edge
+#   make build-secure          — print operator workflow for the secret-kirk-edge feature
 
 WORKERS     ?= 0
 USERS       ?= 100
@@ -27,7 +29,8 @@ OP          ?= forward
 
 .PHONY: help build test run fmt lint ci image up down \
         bench-rest bench-grpc bench-tcp bench-all bench-compare \
-        compare proto-sync clean
+        compare proto-sync clean \
+        check-secure-isolation build-secure
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) \
@@ -93,6 +96,26 @@ compare:  ## Compare result files with bun bench-ts compare
 proto-sync:  ## Copy proto/kirk.proto into bench-ts/proto/ (keeps client proto in sync)
 	mkdir -p bench-ts/proto
 	cp proto/kirk.proto bench-ts/proto/kirk.proto
+
+check-secure-isolation:  ## Assert the default build does not resolve the secret-kirk-edge dep
+	bash scripts/check-default-build-clean.sh
+
+build-secure:  ## Print operator instructions for building with the secret-kirk-edge feature
+	@echo ""
+	@echo "=== Secure Build (secret-kirk-edge feature) ==="
+	@echo ""
+	@echo "The 'secret-kirk-edge' feature requires Tailnet access and a local Cargo.toml"
+	@echo "patch that declares the private git dependency. CI and Docker MUST NOT use"
+	@echo "this target. See docs/SECURE_BUILD.md for the full operator workflow."
+	@echo ""
+	@echo "Summary of steps:"
+	@echo "  1. Ensure you have active Tailnet access to the private git host."
+	@echo "  2. Follow the patch-dep instructions in docs/SECURE_BUILD.md."
+	@echo "  3. Run: cargo build --release -p kirk-server --features secret-kirk-edge"
+	@echo "  4. Run: bash scripts/check-default-build-clean.sh  (must still pass)"
+	@echo ""
+	@echo "NEVER commit Cargo.toml changes that include the git URL."
+	@echo ""
 
 clean:  ## Remove build artifacts, bench results, and node_modules
 	cargo clean

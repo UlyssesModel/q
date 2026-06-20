@@ -5,7 +5,6 @@ services:
       context: .
       dockerfile: docker/Dockerfile
     image: kirk-server:dev
-    container_name: kirk-server
     ports:
       - "50051:50051"
       - "8080:8080"
@@ -15,6 +14,8 @@ services:
       KIRK_WORKERS: "0"
       KIRK_TEMPERATURE: "1.0"
       KIRK_MAX_CONNECTIONS: "8192"
+      KIRK_MODEL: "kirk"
+      KIRK_ENV: "local"
     # SEC-009: the distroless runtime image has neither `wget` nor a shell, so
     # we use the server's own `--healthcheck` CLI flag (one-shot HTTP GET to
     # `/healthz`, exits 0 on 200) as the docker `CMD` probe.

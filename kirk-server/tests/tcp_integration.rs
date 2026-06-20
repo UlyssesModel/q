@@ -556,7 +556,7 @@ async fn tcp_forward_n1_rejected() {
 /// unbounded resources.
 #[tokio::test(flavor = "multi_thread")]
 async fn tcp_connection_cap_enforced() {
-    use kirk_server::{start_server_with, ServerSettings};
+    use kirk_server::{start_server_with, Env, Model, ServerSettings};
 
     let settings = ServerSettings {
         bind: "127.0.0.1".to_string(),
@@ -569,6 +569,8 @@ async fn tcp_connection_cap_enforced() {
         max_connections: 2,
         max_in_flight_per_conn: 8,
         tcp_write_timeout: Duration::from_secs(10),
+        model: Model::Tiberius,
+        env: Env::Local,
     };
     let srv = start_server_with(settings).await.expect("start server");
     let tcp_port = srv.ports.tcp;

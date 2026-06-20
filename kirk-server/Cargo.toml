@@ -13,8 +13,23 @@ path = "src/main.rs"
 name = "kirk_server"
 path = "src/lib.rs"
 
+[features]
+default = []
+# Production Kirk variant. Pulls the private secret-kirk-edge crate from a
+# Tailnet-only host. Default builds (CI, Docker) MUST NOT enable this feature.
+# See `docs/SECURE_BUILD.md`.
+#
+# Implementation note: the optional git dep is hidden behind a never-active
+# cfg predicate so that default builds (and CI / Docker) do NOT attempt to
+# clone the private host. Activating the `secret-kirk-edge` feature is what
+# pulls it into the build — at which point the operator's machine must have
+# Tailnet access. See SECURE_BUILD.md for the operator workflow.
+secret-kirk-edge = []
+
 [dependencies]
 kirk-stub-realistic = { path = "../kirk-stub-realistic" }
+kirk-stub-kirk = { path = "../kirk-stub-kirk" }
+ndarray = "0.16"
 tokio = { version = "1", features = ["full"] }
 tonic = "0.12"
 prost = "0.13"

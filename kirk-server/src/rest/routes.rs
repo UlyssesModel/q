@@ -35,6 +35,10 @@ pub struct RestState {
 }
 
 pub fn build_router(state: RestState) -> Router {
+    use super::routes_v2::{
+        active_inference_entropy_v2, active_inference_features_v2, active_inference_v2,
+        forward_sample_v2, forward_v2, inference_entropy_v2, inference_features_v2,
+    };
     Router::new()
         .route("/healthz", get(healthz))
         .route("/metrics", get(metrics_endpoint))
@@ -51,6 +55,20 @@ pub fn build_router(state: RestState) -> Router {
             post(active_inference_features),
         )
         .route("/v1/forward-sample", post(forward_sample))
+        // v2: nested JSON [re, im] envelope.
+        .route("/v2/forward", post(forward_v2))
+        .route("/v2/inference/entropy", post(inference_entropy_v2))
+        .route("/v2/inference/features", post(inference_features_v2))
+        .route("/v2/active-inference", post(active_inference_v2))
+        .route(
+            "/v2/active-inference/entropy",
+            post(active_inference_entropy_v2),
+        )
+        .route(
+            "/v2/active-inference/features",
+            post(active_inference_features_v2),
+        )
+        .route("/v2/forward-sample", post(forward_sample_v2))
         // SEC-006: align the HTTP body cap with the TCP `MAX_PAYLOAD` so the
         // documented `--max-matrix-dim = 1024` is actually reachable. Without
         // this, axum's 2 MiB default silently rejects any `matrix_dim` above
@@ -61,7 +79,7 @@ pub fn build_router(state: RestState) -> Router {
         .with_state(state)
 }
 
-fn err_response(err: ServerError) -> Response {
+pub(super) fn err_response(err: ServerError) -> Response {
     let status =
         StatusCode::from_u16(err.http_status()).unwrap_or(StatusCode::INTERNAL_SERVER_ERROR);
     let body = ErrorResponse {
@@ -73,6 +91,15 @@ fn err_response(err: ServerError) -> Response {
 
 fn ok<T: Serialize>(v: T) -> Response {
     Json(v).into_response()
+}
+
+pub(super) fn ok_json<T: Serialize>(v: T) -> Response {
+    ok(v)
+}
+
+pub(super) fn time_observe(metrics: &MetricsHandle, op: &str, t0: Instant, ok: bool) {
+    let dt = t0.elapsed().as_micros() as f64;
+    metrics.observe("rest", op, dt, ok);
 }
 
 async fn healthz(State(state): State<RestState>) -> Response {
@@ -97,11 +124,6 @@ async fn metrics_endpoint(State(state): State<RestState>) -> Response {
         .into_response()
 }
 
-fn time_observe(metrics: &MetricsHandle, op: &str, t0: Instant, ok: bool) {
-    let dt = t0.elapsed().as_micros() as f64;
-    metrics.observe("rest", op, dt, ok);
-}
-
 async fn forward(State(state): State<RestState>, Json(req): Json<ForwardRequest>) -> Response {
     let t0 = Instant::now();
     let res = forward_inner(state.clone(), req).await;
@@ -111,10 +133,6 @@ async fn forward(State(state): State<RestState>, Json(req): Json<ForwardRequest>
         Ok(r) => ok_json(r),
         Err(e) => err_response(e),
     }
-}
-
-fn ok_json<T: Serialize>(v: T) -> Response {
-    ok(v)
 }
 
 async fn forward_inner(
